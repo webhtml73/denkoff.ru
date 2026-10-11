@@ -324,7 +324,7 @@
 </head>
 <body>
   <header>
-    <div class="logo" onclick="navigate('home')">Gigabank</div>
+    <div class="logo" onclick="navigate('home')">Denkoff</div>
     <div class="header-right" id="headerRight" style="display:none">
       <div class="balance-mini">Баланс: <strong id="headerBalance">0 ₽</strong></div>
       <button class="btn-logout" onclick="logout()">Выйти</button>
@@ -343,7 +343,7 @@
           <label>Как вас зовут?</label>
           <input type="text" id="regName" placeholder="Иван Иванов" maxlength="40"/>
         </div>
-        <div class="bonus-pill"><span>🎁</span> Бонус 500 ₽ при регистрации</div>
+   
         <button class="btn-primary" onclick="createAccount()">Создать аккаунт</button>
       </div>
     </div>
@@ -353,7 +353,7 @@
       <div class="bank-card">
         <div class="card-top">
           <div>
-            <div class="card-brand">Gigabank</div>
+            <div class="card-brand">Denkoff</div>
             <div class="card-chip"></div>
           </div>
           <div style="font-size:0.75rem;opacity:0.7;text-align:right;">Виртуальная<br/>карта</div>
@@ -399,14 +399,14 @@
       <div class="bank-card" style="margin-bottom:1rem;">
         <div class="card-top">
           <div>
-            <div class="card-brand">Gigabank</div>
+            <div class="card-brand">Denkoff</div>
             <div class="card-chip"></div>
           </div>
         </div>
         <div class="card-number" id="cardNumberProfile">0000 0000 0000 0000</div>
         <div class="card-bottom">
           <div class="card-name" id="cardNameProfile">YOUR NAME</div>
-          <div class="card-expiry" id="cardExpProfile">12/30</div>
+          <div class="card-expiry" id="cardExpProfile">12/37</div>
         </div>
       </div>
       <div style="background:var(--card-bg);border-radius:14px;padding:0.5rem 1.25rem;border:1px solid #334155;">
@@ -479,11 +479,11 @@
       if (name.length < 2) { showToast('Имя слишком короткое', 'error'); return; }
       const account = {
         name, cardNumber: generateCardNumber(), expiry: generateExpiry(),
-        balance: 500, createdAt: new Date().toISOString(),
-        history: [{ type:'in', title:'Бонус за регистрацию', amount:500, date:new Date().toISOString() }]
+        balance: 00, createdAt: new Date().toISOString(),
+        history: []
       };
       saveData(account);
-      showToast('Аккаунт создан! 500 ₽ зачислены', 'success');
+      showToast('Аккаунт создан!', 'success');
       setTimeout(() => navigate('home'), 500);
     }
 
@@ -540,7 +540,7 @@
         content.innerHTML = `<h2>Пополнение <button class="modal-close" onclick="closeModal()">&times;</button></h2>
           <div class="form-group"><label>Откуда</label>
           <select id="tpSource" style="width:100%;padding:0.85rem 1rem;background:#0f172a;border:1px solid #334155;border-radius:10px;color:var(--text);font-size:1rem;">
-            <option value="card">С карты другого банка</option><option value="sbp">Через СБП</option><option value="wallet">С электронного кошелька</option></select></div>
+            <option value="card">По номеру телефона</option><option value="sbp">Через СБП</option><option value="wallet">Зарплата</option></select></div>
           <div class="form-group"><label>Сумма, ₽</label><input type="number" id="tpAmount" placeholder="0" min="1" /></div>
           <p style="font-size:0.85rem;color:var(--text-muted);">Деньги поступают через 1–2 минуты</p>
           <button class="btn-primary" onclick="doTopup()">Пополнить</button>`;
