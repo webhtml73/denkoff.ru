@@ -2,10 +2,10 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Gigabank — Простой вариант</title>
+  <title>Ваш Банк - Denkoff</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: Arial, Verdana, sans-serif;
       background-color: #eef2f5;
       color: #333;
       margin: 0;
@@ -21,9 +21,10 @@
       font-weight: bold;
       font-size: 20px;
       cursor: pointer;
+      display: inline-block;
     }
     main {
-      max-width: 600px;
+      max-width: 700px;
       margin: 20px auto;
       padding: 20px;
       background: #fff;
@@ -39,27 +40,27 @@
       font-size: 13px;
       color: #555;
     }
-    input {
+    
+    input, select {
       width: 100%;
       padding: 8px;
       border: 1px solid #999;
-      box-sizing: border-box; /* чтобы padding не ломал ширину */
-      margin-bottom: 10px;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+      font-size: 14px;
     }
+    
     button {
-      display: block;
-      width: 100%;
-      padding: 10px;
+      padding: 10px 15px;
       background-color: #ddd;
       border: 1px solid #888;
       color: #000;
       font-weight: bold;
       cursor: pointer;
-      margin-bottom: 10px;
+      width: 100%;
     }
-    button:hover {
-      background-color: #ccc;
-    }
+    button:hover { background-color: #ccc; }
+
     .card-box {
       background: #f9f9f9;
       border: 2px solid #aaa;
@@ -73,17 +74,39 @@
       letter-spacing: 4px;
       margin: 10px 0;
       color: #222;
+      word-spacing: 2px;
     }
+
     .balance-big {
-      font-size: 24px;
+      font-size: 28px;
       font-weight: bold;
       color: #006600;
       text-align: center;
       margin: 20px 0;
     }
-    .hidden {
-      display: none;
+
+    /* История */
+    .history-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
     }
+    .history-item {
+      background: #fafafa;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hist-info { flex: 1; }
+    .hist-type { font-weight: bold; }
+    .hist-date { font-size: 11px; color: #888; display: block; }
+    .hist-amount.in { color: #006600; font-weight: bold; }
+    .hist-amount.out { color: #cc0000; font-weight: bold; }
+
+    .hidden { display: none; }
   </style>
 </head>
 <body>
@@ -97,16 +120,17 @@
   </header>
 
   <main>
-    <!-- Страница регистрации -->
+    <!-- СТРАНИЦА РЕГИСТРАЦИИ -->
     <div id="page-register">
-      <h1>Добро пожаловать</h1>
-      <p>Создайте аккаунт, чтобы начать пользоваться банком.</p>
-      <input type="text" id="user-name" placeholder="Ваше имя (например, Иван)">
+      <h1>Добро пожаловать в Gigabank</h1>
+      <p>Создайте аккаунт за 10 секунд и получите 500 ₽ на счёт.</p>
+      <input type="text" id="user-name" placeholder="Ваше имя (например, Иван Иванов)" maxlength="40">
       <button onclick="createAccount()">Создать аккаунт</button>
     </div>
 
-    <!-- Главная страница -->
+    <!-- ГЛАВНАЯ СТРАНИЦА -->
     <div id="page-home" class="hidden">
+      <!-- Имитация карты -->
       <div class="card-box">
         <div style="text-align:left; font-size:12px; color:#666;">Denkoff<br>Виртуальная карта</div>
         <div class="card-number" id="card-display">0000 0000 0000 0000</div>
@@ -116,27 +140,42 @@
         </div>
       </div>
 
-      <div>
-        <p style="text-align:center;">Ваш баланс</p>
+      <div style="text-align:center;">
+        <p>Ваш баланс</p>
         <div class="balance-big"><span id="balance-display">0</span> ₽</div>
       </div>
 
-      <button onclick="topUp()">Пополнить счёт (+1000 ₽)</button>
-      <button onclick="transfer()">Перевести деньги (−500 ₽)</button>
+      <!-- Блок пополнения (ручной ввод) -->
+      <div>
+        <h2>Пополнить счёт</h2>
+        <p>Введите сумму для пополнения:</p>
+        <input type="number" id="topup-amount" placeholder="Сумма в рублях (например, 1250)" min="1">
+        <button onclick="topUp()">Пополнить</button>
+      </div>
 
-      <div style="margin-top:20px; padding:15px; background:#f0f0f0; border:1px solid #ccc;">
-        <h2>Профиль</h2>
-        <p><strong>Имя:</strong> <span id="profile-name">-</span></p>
-        <p><strong>Номер карты:</strong> <span id="profile-card" style="font-family:'Courier New',monospace;">-</span></p>
-        <p><strong>Баланс:</strong> <span id="profile-balance">-</span> ₽</p>
+      <!-- Блок перевода (ручной ввод) -->
+      <div>
+        <h2>Перевести деньги</h2>
+        <p>Укажите, кому и сколько перевести:</p>
+        <input type="text" id="transfer-to" placeholder="Номер карты получателя (16 цифр)">
+        <input type="number" id="transfer-amount" placeholder="Сумма перевода в рублях" min="1">
+        <button onclick="doTransfer()">Отправить перевод</button>
+      </div>
+
+      <!-- История операций -->
+      <div>
+        <h2>История операций</h2>
+        <ul class="history-list" id="history-list">
+          <!-- Сюда JS будет добавлять строки -->
+        </ul>
       </div>
     </div>
   </main>
 
   <script>
-    // Простая логика на чистом JS
-    const STORAGE_KEY = 'gigabank_simple';
+    const STORAGE_KEY = 'gigabank_manual';
 
+    // --- Утилиты ---
     function getData() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -148,6 +187,18 @@
 
     function saveData(data) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function formatMoney(n) {
+      return new Intl.NumberFormat('ru-RU').format(n);
+    }
+
+    function generateCard() {
+      let parts = [];
+      for (let i = 0; i < 4; i++) {
+        parts.push(String(Math.floor(1000 + Math.random() * 9000)));
+      }
+      return parts.join(' ');
     }
 
     function showPage(pageName) {
@@ -164,6 +215,7 @@
       }
     }
 
+    // --- Логика регистрации ---
     function createAccount() {
       const name = document.getElementById('user-name').value.trim();
       if (!name || name.length < 2) {
@@ -174,22 +226,16 @@
       const account = {
         name: name,
         card: generateCard(),
-        balance: 500 // стартовый бонус
+        balance: 500, // Стартовый бонус
+        history: []
       };
 
       saveData(account);
-      alert('Аккаунт создан! Начислено 500 ₽.');
+      alert('Аккаунт создан! Начислено 500 ₽. Добро пожаловать!');
       showPage('home');
     }
 
-    function generateCard() {
-      let parts = [];
-      for (let i = 0; i < 4; i++) {
-        parts.push(String(Math.floor(1000 + Math.random() * 9000)));
-      }
-      return parts.join(' ');
-    }
-
+    // --- Отрисовка главной страницы ---
     function renderHome() {
       const data = getData();
       if (!data) {
@@ -197,39 +243,110 @@
         return;
       }
 
-      // Обновляем данные на странице
       document.getElementById('card-display').textContent = data.card;
       document.getElementById('name-display').textContent = data.name.toUpperCase();
-      document.getElementById('balance-display').textContent = data.balance;
-      document.getElementById('header-balance').textContent = data.balance + ' ₽';
+      document.getElementById('balance-display').textContent = formatMoney(data.balance);
+      document.getElementById('header-balance').textContent = formatMoney(data.balance) + ' ₽';
 
-      document.getElementById('profile-name').textContent = data.name;
-      document.getElementById('profile-card').textContent = data.card;
-      document.getElementById('profile-balance').textContent = data.balance;
-    }
-
-    function topUp() {
-      const data = getData();
-      if (!data) return;
-      data.balance += 1000;
-      saveData(data);
-      renderHome();
-      alert('Счёт пополнен на 1000 ₽. Новый баланс: ' + data.balance + ' ₽');
-    }
-
-    function transfer() {
-      const data = getData();
-      if (!data) return;
-
-      if (data.balance < 500) {
-        alert('Недостаточно средств для перевода.');
+      const list = document.getElementById('history-list');
+      if (!data.history || data.history.length === 0) {
+        list.innerHTML = '<li style="padding:15px; text-align:center; color:#888;">Пока нет операций</li>';
         return;
       }
 
-      data.balance -= 500;
+      list.innerHTML = data.history.slice().reverse().map(item => {
+        const isIn = item.type === 'in';
+        const amountClass = isIn ? 'hist-amount in' : 'hist-amount out';
+        const typeText = isIn ? 'Пополнение' : 'Перевод';
+        
+        let extraInfo = '';
+        if (!isIn && item.to) {
+          extraInfo = `<span style="font-size:11px; color:#555;">Кому: ${item.to}</span><br>`;
+        }
+
+        return `
+          <li class="history-item">
+            <div class="hist-info">
+              <span class="hist-type">${typeText}</span>
+              ${extraInfo}
+              <span class="hist-date">${new Date(item.date).toLocaleString('ru-RU')}</span>
+            </div>
+            <span class="${amountClass}">${isIn ? '+' : ''}${formatMoney(item.amount)} ₽</span>
+          </li>
+        `;
+      }).join('');
+    }
+
+    // --- Операции ---
+    function topUp() {
+      const amountRaw = document.getElementById('topup-amount').value;
+      const amount = parseFloat(amountRaw);
+
+      if (!amount || amount <= 0) {
+        alert('Введите корректную сумму (больше 0).');
+        return;
+      }
+
+      const data = getData();
+      if (!data) return;
+
+      data.balance += amount;
+      
+      data.history.push({
+        type: 'in',
+        title: 'Пополнение',
+        amount: amount,
+        date: new Date().toISOString()
+      });
+
       saveData(data);
       renderHome();
-      alert('Переведено 500 ₽. Остаток: ' + data.balance + ' ₽.');
+
+      // Очищаем поле
+      document.getElementById('topup-amount').value = '';
+      alert(`Счёт пополнен на ${formatMoney(amount)} ₽. Новый баланс: ${formatMoney(data.balance)} ₽`);
+    }
+
+    function doTransfer() {
+      const to = document.getElementById('transfer-to').value.trim();
+      const amountRaw = document.getElementById('transfer-amount').value;
+      const amount = parseFloat(amountRaw);
+
+      if (!to) {
+        alert('Введите номер карты получателя.');
+        return;
+      }
+      if (!amount || amount <= 0) {
+        alert('Введите корректную сумму перевода (больше 0).');
+        return;
+      }
+
+      const data = getData();
+      if (!data) return;
+
+      if (data.balance < amount) {
+        alert('Недостаточно средств на счёте!');
+        return;
+      }
+
+      data.balance -= amount;
+
+      data.history.push({
+        type: 'out',
+        title: 'Перевод',
+        to: to,
+        amount: amount,
+        date: new Date().toISOString()
+      });
+
+      saveData(data);
+      renderHome();
+
+      // Очищаем поля
+      document.getElementById('transfer-to').value = '';
+      document.getElementById('transfer-amount').value = '';
+
+      alert(`Перевод ${formatMoney(amount)} ₽ выполнен на карту ${to}.`);
     }
 
     function logout() {
@@ -237,7 +354,6 @@
       showPage('register');
     }
 
-    // При загрузке проверяем, есть ли аккаунт
     window.addEventListener('DOMContentLoaded', () => {
       const data = getData();
       if (data) {
