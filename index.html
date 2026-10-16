@@ -1,123 +1,72 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Denkoff</title>
+  <meta charset="UTF-8">
+  <title>Gigabank — Простой вариант</title>
   <style>
     body {
-      font-family: Arial, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
       background-color: #eef2f5;
       color: #333;
       margin: 0;
       padding: 10px;
     }
-
     header {
       background-color: #dcdcdc;
       border: 1px solid #999;
-      color: #000;
       padding: 15px;
       text-align: center;
     }
-
     .logo {
       font-weight: bold;
       font-size: 20px;
       cursor: pointer;
-      display: inline-block;
     }
-
-    /* Убираем градиенты и сложные эффекты */
     main {
-      max-width: 700px;
+      max-width: 600px;
       margin: 20px auto;
-      padding: 15px;
+      padding: 20px;
       background: #fff;
       border: 1px solid #bbb;
     }
-
-    .page {
-      display: none;
-    }
-    .page.active {
-      display: block;
-    }
-
     h1, h2 {
-      margin: 0 0 10px 0;
+      margin: 0 0 15px 0;
       font-size: 18px;
       text-transform: uppercase;
     }
-
     p {
       margin: 5px 0;
       font-size: 13px;
       color: #555;
     }
-
-    .reg-hero {
-      text-align: center;
-      padding-bottom: 15px;
-      border-bottom: 1px dashed #ccc;
-      margin-bottom: 15px;
-    }
-
-    .reg-card, .card-container {
-      background: #f9f9f9;
-      border: 1px solid #ccc;
-      padding: 15px;
-    }
-
-    .form-group {
-      margin-bottom: 12px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 12px;
-      color: #444;
-    }
-
     input {
-      padding: 6px;
-      border: 1px solid #999;
-      background: #fff;
       width: 100%;
-      font-size: 13px;
-    }
-
-    select {
-      padding: 6px;
+      padding: 8px;
       border: 1px solid #999;
-      background: #fff;
-      width: 100%;
-      font-size: 13px;
+      box-sizing: border-box; /* чтобы padding не ломал ширину */
+      margin-bottom: 10px;
     }
-
     button {
-      padding: 6px 12px;
+      display: block;
+      width: 100%;
+      padding: 10px;
       background-color: #ddd;
-      color: #000;
       border: 1px solid #888;
-      cursor: pointer;
-      font-size: 13px;
+      color: #000;
       font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 10px;
     }
-
     button:hover {
       background-color: #ccc;
     }
-
-    /* Простая имитация карты без градиентов */
-    .bank-card {
-      background: #fff;
+    .card-box {
+      background: #f9f9f9;
       border: 2px solid #aaa;
       padding: 15px;
       text-align: center;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
-
     .card-number {
       font-family: 'Courier New', monospace;
       font-size: 16px;
@@ -125,437 +74,177 @@
       margin: 10px 0;
       color: #222;
     }
-
-    .balance-section {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .balance-amount {
+    .balance-big {
       font-size: 24px;
       font-weight: bold;
       color: #006600;
-    }
-
-    /* Сетка действий — float вместо grid */
-    .actions {
-      overflow: hidden;
-      margin-bottom: 20px;
-    }
-
-    .action-btn {
-      float: left;
-      width: 31%;
-      margin-right: 3%;
-      background: #f0f0f0;
-      border: 1px solid #999;
-      padding: 8px 0;
       text-align: center;
-      cursor: pointer;
+      margin: 20px 0;
     }
-
-    .action-btn:last-child {
-      margin-right: 0;
-    }
-
-    .profile-row {
-      border-bottom: 1px dotted #ccc;
-      padding: 4px 0;
-    }
-
-    .profile-key, .profile-val {
-      display: inline-block;
-      vertical-align: middle;
-      font-size: 13px;
-    }
-
-    .profile-key {
-      color: #666;
-      min-width: 140px;
-    }
-
-    .history-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .history-item {
-      background: #fafafa;
-      border: 1px solid #ddd;
-      padding: 8px;
-      margin-bottom: 6px;
-    }
-
-    .history-type {
-      font-weight: bold;
-    }
-
-    .history-date {
-      font-size: 11px;
-      color: #888;
-    }
-
-    .history-amount.in { color: #006600; }
-    .history-amount.out { color: #cc0000; }
-
-    /* Модальное окно — простой блок */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.6);
+    .hidden {
       display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .modal {
-      background: #fff;
-      padding: 20px;
-      border: 1px solid #999;
-      width: 400px;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #333;
-      color: #fff;
-      padding: 8px 16px;
-      border-radius: 4px;
-      z-index: 2000;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .toast.show {
-      opacity: 1;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <div class="logo" onclick="navigate('home')">Denkoff Bank</div>
-    <div id="headerRight" style="display:none; float:right; margin-top:4px;">
-      <span style="font-size:13px;">Баланс: <strong id="headerBalance">0 ₽</strong></span>
-      <button style="margin-left:12px;" onclick="logout()">Выйти</button>
+    <div class="logo" onclick="showPage('register')">Denkoff Bank</div>
+    <div id="header-info" class="hidden" style="float:right; margin-top:4px;">
+      <span>Баланс: <strong id="header-balance">0 ₽</strong></span>
+      <button onclick="logout()" style="width:auto; padding:4px 10px; margin-left:10px;">Выйти</button>
     </div>
   </header>
 
   <main>
-    <!-- Регистрация -->
-    <div id="page-register" class="page active">
-      <div class="reg-hero">
-        <h1>Добро пожаловать в Gigabank</h1>
-        <p>Создайте аккаунт за 10 секунд и получите 500 ₽ на счёт</p>
-      </div>
-      <div class="reg-card">
-        <div class="form-group">
-          <label>Как вас зовут?</label>
-          <input type="text" id="regName" placeholder="Иван Иванов" maxlength="40"/>
-        </div>
-        <button onclick="createAccount()">Создать аккаунт</button>
-      </div>
+    <!-- Страница регистрации -->
+    <div id="page-register">
+      <h1>Добро пожаловать</h1>
+      <p>Создайте аккаунт, чтобы начать пользоваться банком.</p>
+      <input type="text" id="user-name" placeholder="Ваше имя (например, Иван)">
+      <button onclick="createAccount()">Создать аккаунт</button>
     </div>
 
-    <!-- Главная -->
-    <div id="page-home" class="page">
-      <div class="bank-card">
-        <div style="text-align:left; font-size:12px; color:#666;">
-          Denkoff<br/>
-          Виртуальная карта
-        </div>
-        <div class="card-number" id="cardNumberDisplay">0000 0000 0000 0000</div>
+    <!-- Главная страница -->
+    <div id="page-home" class="hidden">
+      <div class="card-box">
+        <div style="text-align:left; font-size:12px; color:#666;">Denkoff<br>Виртуальная карта</div>
+        <div class="card-number" id="card-display">0000 0000 0000 0000</div>
         <div style="text-align:right; font-size:12px; color:#666;">
-          <span id="cardNameDisplay">YOUR NAME</span><br/>
-          <span id="cardExpDisplay">12/30</span>
+          <span id="name-display">YOUR NAME</span><br>
+          12/30
         </div>
       </div>
 
-      <div class="balance-section">
-        <p>Ваш баланс</p>
-        <div class="balance-amount"><span id="balanceAmount">0</span> ₽</div>
+      <div>
+        <p style="text-align:center;">Ваш баланс</p>
+        <div class="balance-big"><span id="balance-display">0</span> ₽</div>
       </div>
 
-      <div class="actions">
-        <div class="action-btn" onclick="openModal('transfer')">Перевод</div>
-        <div class="action-btn" onclick="openModal('topup')">Пополнить</div>
-        <div class="action-btn" onclick="navigate('history')">История</div>
+      <button onclick="topUp()">Пополнить счёт (+1000 ₽)</button>
+      <button onclick="transfer()">Перевести деньги (−500 ₽)</button>
+
+      <div style="margin-top:20px; padding:15px; background:#f0f0f0; border:1px solid #ccc;">
+        <h2>Профиль</h2>
+        <p><strong>Имя:</strong> <span id="profile-name">-</span></p>
+        <p><strong>Номер карты:</strong> <span id="profile-card" style="font-family:'Courier New',monospace;">-</span></p>
+        <p><strong>Баланс:</strong> <span id="profile-balance">-</span> ₽</p>
       </div>
-
-      <div style="background:#f0f0f0; border:1px solid #ccc; padding:10px; cursor:pointer;" onclick="navigate('profile')">
-        <span style="font-weight:bold;" id="profileNameDisplay">Имя</span><br/>
-        <span style="font-size:11px; color:#777;">Профиль и настройки</span>
-      </div>
-    </div>
-
-    <!-- История -->
-    <div id="page-history" class="page">
-      <h2>История операций</h2>
-      <ul class="history-list" id="historyList"></ul>
-    </div>
-
-    <!-- Профиль -->
-    <div id="page-profile" class="page">
-      <h2>Профиль</h2>
-      <div class="card-container">
-        <div style="text-align:left;">
-          Denkoff<br/>
-          Виртуальная карта
-        </div>
-        <div class="card-number" id="cardNumberProfile">0000 0000 0000 0000</div>
-        <div style="text-align:right;">
-          <span id="cardNameProfile">YOUR NAME</span><br/>
-          <span id="cardExpProfile">12/37</span>
-        </div>
-      </div>
-
-      <div style="background:#f9f9f9; border:1px solid #ccc; padding:12px;">
-        <div class="profile-row"><span class="profile-key">Имя:</span><span class="profile-val" id="profileName">—</span></div>
-        <div class="profile-row"><span class="profile-key">Номер карты:</span><span class="profile-val" id="profileCard" style="font-family:'Courier New',monospace;">—</span></div>
-        <div class="profile-row"><span class="profile-key">Срок действия:</span><span class="profile-val" id="profileExp">—</span></div>
-        <div class="profile-row"><span class="profile-key">Баланс:</span><span class="profile-val" id="profileBalance">—</span></div>
-        <div class="profile-row"><span class="profile-key">Дата регистрации:</span><span class="profile-val" id="profileRegDate">—</span></div>
-      </div>
-
-      <button style="width:100%; margin-top:12px;" onclick="logout()">Выйти из аккаунта</button>
     </div>
   </main>
 
-  <!-- Модальное окно -->
-  <div class="modal-overlay" id="overlay">
-    <div class="modal">
-      <h2 id="modalTitle"></h2>
-      <div id="modalContent"></div>
-    </div>
-  </div>
-
-  <!-- Toast -->
-  <div class="toast" id="toast"></div>
   <script>
-    const STORAGE_KEY = 'gigabank_account';
+    // Простая логика на чистом JS
+    const STORAGE_KEY = 'gigabank_simple';
 
-    // --- Утилиты ---
     function getData() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch (e) { return null; }
-    }
-    function saveData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-    function formatMoney(n) { return new Intl.NumberFormat('ru-RU').format(Math.floor(n * 100) / 100); }
-    function formatDateTime(iso) { return new Date(iso).toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }); }
-
-    function generateCardNumber() {
-      let g = [];
-      for (let i = 0; i < 4; i++) g.push(String(Math.floor(1000 + Math.random() * 9000)));
-      return g.join(' ');
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        return null;
+      }
     }
 
-    function generateExpiry() {
-      const now = new Date();
-      const expYear = (now.getFullYear() + 4) % 100;
-      return `${String(now.getMonth()+1).padStart(2,'0')}/${String(expYear).padStart(2,'0')}`;
+    function saveData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     }
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = 'toast show';
-      setTimeout(() => t.classList.remove('show'), 3000);
+    function showPage(pageName) {
+      document.getElementById('page-register').classList.add('hidden');
+      document.getElementById('page-home').classList.add('hidden');
+
+      if (pageName === 'register') {
+        document.getElementById('page-register').classList.remove('hidden');
+        document.getElementById('header-info').classList.add('hidden');
+      } else if (pageName === 'home') {
+        document.getElementById('page-home').classList.remove('hidden');
+        document.getElementById('header-info').classList.remove('hidden');
+        renderHome();
+      }
     }
 
-    // --- Навигация ---
-    function navigate(page) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      const target = document.getElementById('page-' + page);
-      if (target) target.classList.add('active');
-
-      if (page === 'home') renderHome();
-      if (page === 'history') renderHistory();
-      if (page === 'profile') renderProfile();
-
-      window.scrollTo(0, 0);
-    }
-
-    // --- Регистрация ---
     function createAccount() {
-      const name = document.getElementById('regName').value.trim();
-      if (!name) { showToast('Введите ваше имя'); return; }
-      if (name.length < 2) { showToast('Имя слишком короткое'); return; }
+      const name = document.getElementById('user-name').value.trim();
+      if (!name || name.length < 2) {
+        alert('Пожалуйста, введите имя (минимум 2 буквы).');
+        return;
+      }
 
       const account = {
-        name,
-        cardNumber: generateCardNumber(),
-        expiry: generateExpiry(),
-        balance: 500,
-        createdAt: new Date().toISOString(),
-        history: []
+        name: name,
+        card: generateCard(),
+        balance: 500 // стартовый бонус
       };
 
       saveData(account);
-      showToast('Аккаунт создан! Начислено 500 ₽');
-      setTimeout(() => navigate('home'), 500);
+      alert('Аккаунт создан! Начислено 500 ₽.');
+      showPage('home');
     }
 
-    // --- Отрисовка страниц ---
+    function generateCard() {
+      let parts = [];
+      for (let i = 0; i < 4; i++) {
+        parts.push(String(Math.floor(1000 + Math.random() * 9000)));
+      }
+      return parts.join(' ');
+    }
+
     function renderHome() {
       const data = getData();
-      if (!data) { navigate('register'); return; }
+      if (!data) {
+        showPage('register');
+        return;
+      }
 
-      document.getElementById('headerRight').style.display = 'block';
-      document.getElementById('headerBalance').textContent = formatMoney(data.balance) + ' ₽';
-      document.getElementById('balanceAmount').textContent = formatMoney(data.balance);
-      document.getElementById('cardNumberDisplay').textContent = data.cardNumber;
-      document.getElementById('cardNameDisplay').textContent = data.name.toUpperCase();
-      document.getElementById('cardExpDisplay').textContent = data.expiry;
-      document.getElementById('profileNameDisplay').textContent = data.name;
+      // Обновляем данные на странице
+      document.getElementById('card-display').textContent = data.card;
+      document.getElementById('name-display').textContent = data.name.toUpperCase();
+      document.getElementById('balance-display').textContent = data.balance;
+      document.getElementById('header-balance').textContent = data.balance + ' ₽';
+
+      document.getElementById('profile-name').textContent = data.name;
+      document.getElementById('profile-card').textContent = data.card;
+      document.getElementById('profile-balance').textContent = data.balance;
     }
 
-    function renderHistory() {
+    function topUp() {
       const data = getData();
       if (!data) return;
-
-      const list = document.getElementById('historyList');
-      if (!data.history || data.history.length === 0) {
-        list.innerHTML = '<li style="padding:10px; color:#888; text-align:center;">Операций пока нет</li>';
-        return;
-      }
-
-      list.innerHTML = data.history.slice().reverse().map(item => {
-        const isIn = item.type === 'in';
-        const amountClass = isIn ? 'history-amount in' : 'history-amount out';
-        return `
-          <li class="history-item">
-            <div style="float:left;">
-              <span class="history-type">${item.title}</span><br/>
-              <span class="history-date">${formatDateTime(item.date)}</span>
-            </div>
-            <div style="float:right; font-weight:bold;">
-              <span class="${amountClass}">${isIn ? '+' : ''}${formatMoney(item.amount)} ₽</span>
-            </div>
-            <div style="clear:both;"></div>
-          </li>
-        `;
-      }).join('');
-    }
-
-    function renderProfile() {
-      const data = getData();
-      if (!data) return;
-
-      document.getElementById('cardNumberProfile').textContent = data.cardNumber;
-      document.getElementById('cardNameProfile').textContent = data.name.toUpperCase();
-      document.getElementById('cardExpProfile').textContent = data.expiry;
-      document.getElementById('profileName').textContent = data.name;
-      document.getElementById('profileCard').textContent = data.cardNumber;
-      document.getElementById('profileExp').textContent = data.expiry;
-      document.getElementById('profileBalance').textContent = formatMoney(data.balance) + ' ₽';
-      document.getElementById('profileRegDate').textContent = formatDate(data.createdAt);
-    }
-
-    function formatDate(iso) {
-      return new Date(iso).toLocaleDateString('ru-RU', { day:'2-digit', month:'long', year:'numeric' });
-    }
-
-    // --- Модальные окна и операции ---
-    function openModal(type) {
-      const overlay = document.getElementById('overlay');
-      const title = document.getElementById('modalTitle');
-      const content = document.getElementById('modalContent');
-      overlay.style.display = 'flex';
-
-      if (type === 'transfer') {
-        title.textContent = 'Перевод средств';
-        content.innerHTML = `
-          <p>Кому (номер карты):</p>
-          <input id="transferTo" placeholder="0000 0000 0000 0000" style="width:100%; margin-bottom:10px;">
-          <p>Сумма (₽):</p>
-          <input type="number" id="transferAmount" placeholder="100" style="width:100%; margin-bottom:15px;">
-          <button onclick="doTransfer()" style="width:100%;">Отправить перевод</button>
-        `;
-      } else if (type === 'topup') {
-        title.textContent = 'Пополнение счёта';
-        content.innerHTML = `
-          <p>Выберите сумму:</p>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button onclick="topUp(500)" style="flex:1;">500 ₽</button>
-            <button onclick="topUp(1000)" style="flex:1;">1 000 ₽</button>
-            <button onclick="topUp(3000)" style="flex:1;">3 000 ₽</button>
-          </div>
-          <p style="margin-top:12px; font-size:11px; color:#666;">Комиссия не взимается</p>
-        `;
-      }
-    }
-
-    function closeModal() {
-      document.getElementById('overlay').style.display = 'none';
-    }
-
-    // Перехват клика вне модального окна
-    document.getElementById('overlay').addEventListener('click', (e) => {
-      if (e.target === e.currentTarget) closeModal();
-    });
-
-    function doTransfer() {
-      const to = document.getElementById('transferTo').value.trim();
-      const amount = parseFloat(document.getElementById('transferAmount').value);
-
-      if (!to || !amount || amount <= 0) {
-        showToast('Заполните все поля корректно');
-        return;
-      }
-
-      const data = getData();
-      if (!data || data.balance < amount) {
-        showToast('Недостаточно средств');
-        return;
-      }
-
-      // Списываем
-      data.balance -= amount;
-      data.history.push({
-        title: `Перевод на ${to.substring(0, 4)}...`,
-        type: 'out',
-        amount,
-        date: new Date().toISOString()
-      });
-
-      // Имитация зачисления на другую карту (не сохраняем, просто уведомление)
-      showToast(`Перевод ${formatMoney(amount)} ₽ выполнен`);
+      data.balance += 1000;
       saveData(data);
-      closeModal();
       renderHome();
+      alert('Счёт пополнен на 1000 ₽. Новый баланс: ' + data.balance + ' ₽');
     }
 
-    function topUp(amount) {
+    function transfer() {
       const data = getData();
       if (!data) return;
 
-      data.balance += amount;
-      data.history.push({
-        title: 'Пополнение',
-        type: 'in',
-        amount,
-        date: new Date().toISOString()
-      });
+      if (data.balance < 500) {
+        alert('Недостаточно средств для перевода.');
+        return;
+      }
 
+      data.balance -= 500;
       saveData(data);
-      showToast(`Счёт пополнен на ${formatMoney(amount)} ₽`);
-      closeModal();
       renderHome();
+      alert('Переведено 500 ₽. Остаток: ' + data.balance + ' ₽.');
     }
 
     function logout() {
       localStorage.removeItem(STORAGE_KEY);
-      document.getElementById('headerRight').style.display = 'none';
-      navigate('register');
-      showToast('Вы вышли из аккаунта');
+      showPage('register');
     }
 
-    // Инициализация при загрузке
+    // При загрузке проверяем, есть ли аккаунт
     window.addEventListener('DOMContentLoaded', () => {
-      renderHome(); // Если есть аккаунт — покажем главную, иначе регистрацию
+      const data = getData();
+      if (data) {
+        showPage('home');
+      } else {
+        showPage('register');
+      }
     });
   </script>
 </body>
